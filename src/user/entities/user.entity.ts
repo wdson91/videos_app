@@ -102,12 +102,12 @@ export class UserEntity {
                 }
             });
 
-            if (!user) {
+            // if (!user) {
 
-                throw new Error('Usuário não encontrado.');
-            }
+            //     throw new Error('Usuário não encontrado.');
+            // }
 
-            return user
+            return user || null
 
         } catch (error) {
 
