@@ -1,7 +1,8 @@
 /* eslint-disable prettier/prettier */
 import CreateUserDto from '../dto/create-user.dto';
+import { UpdateUserDto } from '../dto/update-user.dto';
 import { PrismaService } from './../../prisma.service';
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 
 import { JwtService } from '@nestjs/jwt';
 
@@ -9,24 +10,21 @@ import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class UserEntity {
 
+
     constructor(private prismaService: PrismaService, private jwtService: JwtService) { }
 
     async createUser(createUserDto: CreateUserDto) {
 
         const existingUser = await this.findByEmail(createUserDto.email);
+
         if (existingUser) {
 
-            throw new Error('Este email já está em uso.');
+            throw new ConflictException('Email já cadastrado');
         }
 
         try {
-            const user = await this.prismaService.user.create({
-                data: {
-                    ...createUserDto,
-                }
-            });
 
-            return user
+            return 'Usuário criado com sucesso.'
 
         } catch (error) {
 
@@ -37,14 +35,13 @@ export class UserEntity {
 
     }
 
-    async updateUser(id: string, updateUserDto: CreateUserDto) {
-
+    async updateUser(id: string, updateUserDto: UpdateUserDto) {
 
         const existingUser = await this.findOne(id);
 
         if (!existingUser) {
 
-            throw new Error('Usuário não encontrado.');
+            throw new ConflictException('Erro ao encontrar usuário.');
         }
 
         try {
@@ -69,7 +66,7 @@ export class UserEntity {
     }
 
     async findOne(id: string) {
-
+        console.log(id);
         try {
 
             const user = await this.prismaService.user.findUnique({
@@ -83,7 +80,7 @@ export class UserEntity {
                 throw new Error('Usuário não encontrado.');
             }
 
-            return user
+            return { ...user, password: undefined, createdAt: undefined, updatedAt: undefined }
 
         } catch (error) {
 
@@ -102,18 +99,20 @@ export class UserEntity {
                 }
             });
 
-            // if (!user) {
-
-            //     throw new Error('Usuário não encontrado.');
-            // }
-
-            return user || null
+            return user
 
         } catch (error) {
 
-            throw new Error('Erro ao encontrar usuário.');
+            throw new ConflictException('Erro ao encontrar usuário.');
 
         }
 
+    }
+
+    async generateToken(user: { id: string; email: string; name: string; password: string; createdAt: Date; updatedAt: Date; }) {
+        const payload = { id: user.id, email: user.email };
+        return {
+            access_token: await this.jwtService.signAsync(payload),
+        };
     }
 }

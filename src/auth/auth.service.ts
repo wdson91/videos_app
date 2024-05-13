@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import CreateUserDto from 'src/user/dto/create-user.dto';
 /* eslint-disable prettier/prettier */
 
@@ -21,7 +22,6 @@ export class AuthService {
                 password: hashedPassword,
             });
 
-            createdUser.password = undefined;
             return createdUser;
         } catch (error) {
             throw new HttpException(

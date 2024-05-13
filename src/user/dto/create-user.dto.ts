@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { IsString, IsEmail, IsEmpty } from 'class-validator';
+import { IsString, IsEmail, IsNotEmpty } from 'class-validator';
 
 class CreateUserDto {
     @IsString()
@@ -7,11 +7,11 @@ class CreateUserDto {
     email: string;
 
     @IsString()
-    @IsEmpty()
+    @IsNotEmpty()
     name: string;
 
     @IsString()
-    @IsEmpty()
+    @IsNotEmpty()
     password: string;
 }
 

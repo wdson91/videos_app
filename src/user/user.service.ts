@@ -1,9 +1,11 @@
+/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 
 import { UpdateUserDto } from './dto/update-user.dto';
 import CreateUserDto from './dto/create-user.dto';
 import { UserEntity } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
+
 
 @Injectable()
 export class UserService {
@@ -26,8 +28,8 @@ export class UserService {
     return `This action returns all user`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: string) {
+    return await this.userentity.findOne(id);
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
@@ -41,7 +43,7 @@ export class UserService {
   async login(createUserDto: CreateUserDto) {
     const { email, password } = createUserDto;
 
-    const user = await this.userentity.findOne(email);
+    const user = await this.userentity.findByEmail(email);
 
     if (!user) {
       throw new Error('Usuário não encontrado.');
@@ -53,6 +55,6 @@ export class UserService {
       throw new Error('Senha inválida.');
     }
 
-    return { 'Usuário logado com sucesso': user };
+    return await this.userentity.generateToken(user);
   }
 }
