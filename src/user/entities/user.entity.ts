@@ -11,6 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 export class UserEntity {
 
 
+
     constructor(private prismaService: PrismaService, private jwtService: JwtService) { }
 
     async createUser(createUserDto: CreateUserDto) {
@@ -66,7 +67,7 @@ export class UserEntity {
     }
 
     async findOne(id: string) {
-        console.log(id);
+
         try {
 
             const user = await this.prismaService.user.findUnique({
@@ -114,5 +115,22 @@ export class UserEntity {
         return {
             access_token: await this.jwtService.signAsync(payload),
         };
+    }
+
+    async myVideos(id: any) {
+
+        try {
+            const videos = await this.prismaService.videos.findMany({
+                where: {
+                    userId: id
+                }
+            });
+
+            return videos;
+        }
+        catch (error) {
+            throw new Error('Erro ao encontrar vídeos.');
+        }
+
     }
 }

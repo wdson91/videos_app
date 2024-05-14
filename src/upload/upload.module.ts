@@ -1,3 +1,4 @@
+import { PrismaService } from './../prisma.service';
 /* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 import {
@@ -28,6 +29,6 @@ import { UploadService } from './upload.service';
         // other modules...
     ],
     controllers: [FilesController],
-    providers: [UploadService],
+    providers: [UploadService, PrismaService],
 })
 export class UploadModule { }

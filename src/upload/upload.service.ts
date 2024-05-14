@@ -1,16 +1,33 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { GoogleDriveService } from 'nestjs-googledrive-upload';
+import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class UploadService {
-    constructor(private readonly googleDriveService: GoogleDriveService) { }
+    constructor(private readonly googleDriveService: GoogleDriveService, private prismaService: PrismaService) { }
 
-    public async uploadImage(file: Express.Multer.File): Promise<string> {
+    public async uploadImage(file: Express.Multer.File, title: string, userId: any): Promise<string> {
         try {
-            const link = await this.googleDriveService.uploadImage(file);
+            const url = await this.googleDriveService.uploadImage(file);
             // do something with the link, e.g., save it to the database
-            return link;
+            const idVideo = url.split('=')[1];
+            const baseUrl = 'https://drive.google.com/file/d/';
+
+
+            const finalUrl = baseUrl + idVideo + '/preview';
+
+            if (url) {
+                const video = await this.prismaService.videos.create({
+                    data: {
+                        title,
+                        url: finalUrl,
+                        userId: userId,
+                    }
+                });
+                return video.url;
+            }
+
         } catch (e) {
             throw new Error(e);
         }
@@ -25,4 +42,8 @@ export class UploadService {
             throw new Error(e);
         }
     }
+
+
+
 }
+

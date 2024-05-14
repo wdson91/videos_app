@@ -14,6 +14,7 @@ import { UserService } from './user.service';
 import CreateUserDto from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { LoginUserDto } from './dto/login-user.dto';
 
 @Controller()
 export class UserController {
@@ -48,7 +49,13 @@ export class UserController {
 
 
   @Post('login')
-  async login(@Body() createUserDto: CreateUserDto) {
-    return this.userService.login(createUserDto);
+  async login(@Body() loginUserDto: LoginUserDto) {
+    return this.userService.login(loginUserDto);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('myVideos')
+  async myVideos(@Request() request) {
+    return this.userService.myVideos(request.id);
   }
 }

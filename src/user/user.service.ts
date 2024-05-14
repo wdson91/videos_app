@@ -5,10 +5,12 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import CreateUserDto from './dto/create-user.dto';
 import { UserEntity } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { LoginUserDto } from './dto/login-user.dto';
 
 
 @Injectable()
 export class UserService {
+
   constructor(private userentity: UserEntity) { }
   saltOrRounds = 10;
 
@@ -40,8 +42,8 @@ export class UserService {
     return `This action removes a #${id} user`;
   }
 
-  async login(createUserDto: CreateUserDto) {
-    const { email, password } = createUserDto;
+  async login(loginUserDto: LoginUserDto) {
+    const { email, password } = loginUserDto;
 
     const user = await this.userentity.findByEmail(email);
 
@@ -57,4 +59,11 @@ export class UserService {
 
     return await this.userentity.generateToken(user);
   }
+
+  async myVideos(id: any) {
+
+    return await this.userentity.myVideos(id);
+  }
+
+
 }
