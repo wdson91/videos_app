@@ -7,9 +7,24 @@ import {
 } from 'nestjs-googledrive-upload';
 import { FilesController } from './files.controller';
 import { UploadService } from './upload.service';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
     imports: [
+        ClientsModule.register([{
+            name: 'UPLOAD_SERVICE',
+            transport: Transport.KAFKA,
+            options: {
+                client: {
+
+                    brokers: ['localhost:9092'],
+                },
+                consumer: {
+                    groupId: 'upload-consumer',
+
+                },
+            },
+        }]),
         GoogleDriveModule.register(
             {
                 type: "service_account",

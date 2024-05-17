@@ -15,14 +15,16 @@ import CreateUserDto from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { LoginUserDto } from './dto/login-user.dto';
+import { MessagePattern } from '@nestjs/microservices';
 
 @Controller()
 export class UserController {
   constructor(private readonly userService: UserService) { }
-
-  @Post()
+  @MessagePattern('upload-consumer')
+  //@Post()
   async create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+    console.log('chegou aqui');
+    //return this.userService.create(createUserDto);
   }
 
   @Get()

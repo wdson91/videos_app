@@ -6,9 +6,23 @@ import { UserEntity } from './entities/user.entity';
 import { PrismaService } from 'src/prisma.service';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from 'src/auth/constants';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
+    ClientsModule.register([{
+      name: 'UPLOAD_SERVICE',
+      transport: Transport.KAFKA,
+      options: {
+        client: {
+
+          brokers: ['localhost:9092'],
+        },
+        consumer: {
+          groupId: 'upload-consumer',
+        },
+      },
+    }]),
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,

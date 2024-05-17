@@ -1,11 +1,14 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
+import { MessagePattern } from '@nestjs/microservices';
 import { GoogleDriveService } from 'nestjs-googledrive-upload';
 import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class UploadService {
     constructor(private readonly googleDriveService: GoogleDriveService, private prismaService: PrismaService) { }
+
+
 
     public async uploadImage(file: Express.Multer.File, title: string, userId: any): Promise<string> {
         try {
@@ -45,5 +48,8 @@ export class UploadService {
 
 
 
+    async uploadConsumer(data: Record<string, unknown>) {
+        console.log('teste', data);
+    }
 }
 
