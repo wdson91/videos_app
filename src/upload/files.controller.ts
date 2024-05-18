@@ -30,7 +30,7 @@ export class FilesController {
     ) {
 
         //console.log(file, body.titulo, userId.id);
-        return this.uploadService.uploadImage(file, body.title, userId.id);
+        return this.uploadService.uploadConsumer(file, body.title, userId.id);
     }
 
 

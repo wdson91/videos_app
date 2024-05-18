@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Inject, Injectable } from '@nestjs/common';
 import {
   ClientKafka,
@@ -8,13 +9,9 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class AppService {
-  constructor(
-    @Inject('UPLOAD_SERVICE') private readonly uploadClient: ClientKafka,
-  ) { }
+  constructor() { }
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
   getHello(): string {
-    this.uploadClient.emit('upload-consumer', { id: 'teste' });
     return 'Hello World!';
   }
 }

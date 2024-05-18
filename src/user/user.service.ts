@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { UpdateUserDto } from './dto/update-user.dto';
 import CreateUserDto from './dto/create-user.dto';
@@ -15,15 +15,8 @@ export class UserService {
   saltOrRounds = 10;
 
   async create(createUserDto: CreateUserDto) {
-    const { password } = createUserDto;
 
-    const hashedPassword = await bcrypt.hash(password, this.saltOrRounds);
-    const user = await this.userentity.createUser({
-      ...createUserDto,
-      password: hashedPassword,
-    });
-
-    return user;
+    return await this.userentity.createUser(createUserDto);
   }
 
   findAll() {
@@ -48,13 +41,13 @@ export class UserService {
     const user = await this.userentity.findByEmail(email);
 
     if (!user) {
-      throw new Error('Usuário não encontrado.');
+      throw new NotFoundException('Usuário não encontrado.');
     }
 
     const isPasswordValid = bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-      throw new Error('Senha inválida.');
+      throw new NotFoundException('Senha inválida.');
     }
 
     return await this.userentity.generateToken(user);

@@ -1,12 +1,12 @@
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
-import { MessagePattern } from '@nestjs/microservices';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { ClientKafka, MessagePattern } from '@nestjs/microservices';
 import { GoogleDriveService } from 'nestjs-googledrive-upload';
 import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class UploadService {
-    constructor(private readonly googleDriveService: GoogleDriveService, private prismaService: PrismaService) { }
+    constructor(private readonly googleDriveService: GoogleDriveService, private prismaService: PrismaService,@Inject('UPLOAD_SERVICE') private readonly uploadClient: ClientKafka) { }
 
 
 
@@ -30,9 +30,10 @@ export class UploadService {
                 });
                 return video.url;
             }
+            this.uploadClient.emit('upload-consumer', { url, title, userId });
 
         } catch (e) {
-            throw new Error(e);
+            throw new BadRequestException(e);
         }
     }
 
@@ -48,8 +49,9 @@ export class UploadService {
 
 
 
-    async uploadConsumer(data: Record<string, unknown>) {
-        console.log('teste', data);
+    public async uploadConsumer(file:any, title:any, userId:any) {
+        this.uploadImage(file, title, userId);
+        return 'Seu arquivo foi enviado com sucesso!, aguarde o email de confirmação.';
     }
 }
 

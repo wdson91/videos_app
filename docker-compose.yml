@@ -2,6 +2,18 @@ version: '3'
 
 services:
 
+  app:
+    build:
+      context: .
+      dockerfile: DockerFile
+    container_name: nest-docker-postgres
+
+    ports:
+      - '3000:3000'
+    depends_on:
+      - zookeeper
+    volumes:
+      - ./src:/app/src
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.3.0

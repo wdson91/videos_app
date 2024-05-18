@@ -2,16 +2,17 @@
 import CreateUserDto from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { PrismaService } from './../../prisma.service';
-import { ConflictException, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 
 import { JwtService } from '@nestjs/jwt';
-
+import * as bcrypt from 'bcrypt';
+ 
 
 @Injectable()
 export class UserEntity {
 
 
-
+    saltOrRounds = 10;
     constructor(private prismaService: PrismaService, private jwtService: JwtService) { }
 
     async createUser(createUserDto: CreateUserDto) {
@@ -25,11 +26,21 @@ export class UserEntity {
 
         try {
 
-            return 'Usuário criado com sucesso.'
+            const { password } = createUserDto;
+
+            const hashedPassword = await bcrypt.hash(password, this.saltOrRounds);
+            const user = await this.prismaService.user.create({
+                data: {
+                    ...createUserDto,
+                    password: hashedPassword
+                }
+            });
+
+            return {message:'Usuário criado com sucesso.'}
 
         } catch (error) {
 
-            throw new Error('Erro ao criar usuário.');
+            throw new BadRequestException('Erro ao criar usuário.');
 
 
         }

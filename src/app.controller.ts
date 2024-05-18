@@ -7,11 +7,10 @@ import { AuthGuard } from './auth/auth.guard';
 export class AppController {
   constructor(private readonly appService: AppService) { }
 
-  @UseGuards(AuthGuard)
+
   @Get()
-  getHello(@Request() request): string {
-    const id = request.id;
-    return id;
+  getHello(): string {
+
     return this.appService.getHello();
   }
 }

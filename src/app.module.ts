@@ -7,6 +7,7 @@ import { UserModule } from './user/user.module';
 import { UploadModule } from './upload/upload.module';
 import { Client, ClientsModule, Transport } from '@nestjs/microservices';
 import { ScheduleModule } from '@nestjs/schedule';
+import { EmailModule } from './email/email.module';
 
 
 
@@ -19,7 +20,7 @@ import { ScheduleModule } from '@nestjs/schedule';
       options: {
         client: {
 
-          brokers: ['localhost:9092'],
+          brokers: ['kafka:29092'],
         },
         consumer: {
           groupId: 'upload-consumer',
@@ -27,7 +28,7 @@ import { ScheduleModule } from '@nestjs/schedule';
       },
     }])
 
-    , UserModule, UploadModule],
+    , UserModule, UploadModule, EmailModule],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })

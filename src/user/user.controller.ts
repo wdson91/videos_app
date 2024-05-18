@@ -21,10 +21,11 @@ import { MessagePattern } from '@nestjs/microservices';
 export class UserController {
   constructor(private readonly userService: UserService) { }
   @MessagePattern('upload-consumer')
-  //@Post()
+  
+  @Post('register')
   async create(@Body() createUserDto: CreateUserDto) {
-    console.log('chegou aqui');
-    //return this.userService.create(createUserDto);
+    //console.log('chegou aqui');
+    return this.userService.create(createUserDto);
   }
 
   @Get()
