@@ -5,7 +5,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: DockerFile
+      dockerfile: Dockerfile
     container_name: nest-docker-postgres
 
     ports:
